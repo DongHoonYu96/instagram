@@ -19,6 +19,8 @@ import { PostsModel } from "./posts/entities/posts.entity";
       database: 'postgres',
       entities: [PostsModel], //생성할 모델들
       synchronize: true, //typeorm 코드와 db싱크를 맞출건지 (개발에서만 써라)
+      logging: true, // 모든 쿼리 로깅
+      logger: 'advanced-console',
     }),
 
   ],
