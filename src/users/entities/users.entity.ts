@@ -28,8 +28,8 @@ export class UsersModel {
   password: string;
 
   @Column({
-    enum: Object.values(RolesEnum), //객체의 값들을 가져옴
+    enum: Object.values(RolesEnum), //객체의 값들을 가져와서 배열로 만듬
     default: RolesEnum.USER, //기본값
   })
-  role: RolesEnum;
+  role: RolesEnum; //
 }
