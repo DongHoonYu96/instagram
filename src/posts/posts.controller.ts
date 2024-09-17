@@ -16,13 +16,13 @@ export class PostsController {
   }
 
   @Post()
-  createPost(@Body() postData: { author: string; title: string; content:string; }){
-    return this.postsService.createPost(postData.author, postData.title, postData.content);
+  createPost(@Body() postData: { authorId: number; title: string; content:string; }){
+    return this.postsService.createPost(postData.authorId, postData.title, postData.content);
   }
 
   @Patch(':id')
-  updatePost(@Param('id') id:number,  @Body() postData: { author: string; title: string; content:string; }){
-    return this.postsService.updatePost(id, postData.author, postData.title, postData.content);
+  updatePost(@Param('id') id:number,  @Body() postData: { title: string; content:string; }){
+    return this.postsService.updatePost(id,  postData.title, postData.content);
   }
 
   @Delete(':id')
