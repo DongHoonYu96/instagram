@@ -11,6 +11,33 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
   ) {}
+
+  /**
+   * 토큰인증
+   *
+   * 1) 사용자가 로그인 또는 화원가입을하면, 토큰 발급받는다.
+   *
+   * 2) 로그인 할때는 Basic 토큰과 함께 요청을보낸다.
+   *    Basic 토큰 : '이메일:비밀번호'를 Base64로 인코딩한 결과
+   *    ex) {authorization : 'Basic {token}' }
+   *
+   * 3) 아무나 접근 할 수 없는 정보 (private router)를 접근할때는
+   *    access토큰을 헤더에 추가해서 요청과함께 보낸다.
+   *    ex) {authorization: 'Bearer {token}'}
+   *
+   * 4) 토큰과 요청을 함께 받은 서버는 토큰 검증을 통해 현재 요청을 보낸
+   *    사용자가 누구인지 알 수 있다.
+   *    ex) 토큰의 sub(id) => 해당 사용자의 post filter
+   *
+   * 5) 만료시간이 지나면 새 토큰을 받아야한다.
+   *    그렇지 않으면 jwtService.verify() 통과가 안됨.
+   *    -> /auth/token/access => access 토큰 새로발급
+   *    -> /auth/token/refresh => refresh 토큰 새로발급
+   *
+   * 6) 토큰이 만려되면 각각의 토큰을 새로 발급 받은 수 있는 엔드포인트에 요청을 해서
+   *    새로운 토큰을 발급받고 새로운 토큰을 사용해서 private route에 접근한다.
+   */
+
   /**
    * 1) register with email
    *    - email, nickname, password 입력받고 사용자 생성
@@ -103,6 +130,43 @@ export class AuthService {
     });
 
     return this.loginUser(newUser);
+  }
+
+  /**
+   * Bearer {bdfbdbdfbdbfdbcvbr43} 파싱해서 리턴
+   */
+  extractTokenFromHeader(header:string, isBearer: boolean){
+    const splitToken = header.split(' ');
+
+    const prefix = isBearer?  'Bearer' : 'Basic';
+
+    if(splitToken.length!==2 || splitToken[0] !== prefix){
+      throw new UnauthorizedException('잘못된 토큰입니다');
+    }
+
+    const token = splitToken[1];
+
+    return token;
+  }
+
+  /**
+   * Basic bd;fbdbdfbdbfdbcvbr43 -> email:password
+   * return [email, password]
+   */
+  decodeBasicToken(base64String:string,){
+    const decoded = Buffer.from(base64String, 'base64').toString('utf8');
+    const splitToken = decoded.split(':');
+
+    if(splitToken.length!==2 ){
+      throw new UnauthorizedException('잘못된 토큰입니다');
+    }
+
+    const [email, password] = splitToken;
+
+    return{
+      email,
+      password,
+    }
 
   }
 }
