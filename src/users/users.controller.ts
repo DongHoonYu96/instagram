@@ -15,12 +15,12 @@ export class UsersController {
     return this.usersService.getUserById(id);
   }
 
-  @Post()
-  createPost(@Body('nickname') nickname: string,
-    @Body('email') email: string,
-    @Body('password') password: string){
-      return this.usersService.createUser({nickname, email, password});
-  }
+  // @Post()
+  // createPost(@Body('nickname') nickname: string,
+  //   @Body('email') email: string,
+  //   @Body('password') password: string){
+  //     return this.usersService.createUser({nickname, email, password});
+  // }
 
   @Patch(':id')
   updatePost(@Param('id') id:number,
