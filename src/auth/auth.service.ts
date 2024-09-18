@@ -84,4 +84,11 @@ export class AuthService {
 
     return existingUser;
   }
+
+  async loginWithEmail(user: Pick<UsersModel, 'email' | 'password'>) {
+    const existingUser = await this.authenticationWithEmailAndPassword(user);
+
+    return this.loginUser(existingUser);
+
+  }
 }
