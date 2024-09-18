@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
 import { PostsService } from './posts.service';
 
 @Controller('posts')
@@ -11,7 +11,7 @@ export class PostsController {
   }
 
   @Get(':id')
-  getPostById(@Param('id') id:number){
+  getPostById(@Param('id', ParseIntPipe) id:number){
     return this.postsService.getPostById(id);
   }
 
@@ -21,12 +21,12 @@ export class PostsController {
   }
 
   @Patch(':id')
-  updatePost(@Param('id') id:number,  @Body() postData: { title: string; content:string; }){
+  updatePost(@Param('id' , ParseIntPipe) id:number,  @Body() postData: { title: string; content:string; }){
     return this.postsService.updatePost(id,  postData.title, postData.content);
   }
 
   @Delete(':id')
-  deletePost(@Param('id') id:number){
+  deletePost(@Param('id' , ParseIntPipe) id:number){
     return this.postsService.deletePost(id);
   }
 
