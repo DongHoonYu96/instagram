@@ -10,7 +10,7 @@ export class AuthController {
    * Header중 authorization 필드만 가져옴
    */
   @Post('/login/email')
-  loginEmail(
+  postLoginEmail(
     @Headers('authorization') rawToken: string,){
     const token = this.authService.extractTokenFromHeader(rawToken, false);
 
@@ -20,7 +20,7 @@ export class AuthController {
   }
 
   @Post('/register/email')
-  registerEmail(
+  postRegisterEmail(
     @Body('nickname')nickname :string,
     @Body('email')email :string,
     @Body('password')password : string,){
@@ -29,5 +29,37 @@ export class AuthController {
       email,
       password,
     });
+  }
+
+  @Post('token/access')
+  postTokenAccess(
+    @Headers('authorization') rawToken: string,){
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+
+    const newToken = this.authService.rotateToken(token,false);
+
+    /**
+     * {accessToken : {token}}
+     */
+    return {
+      accessToken: newToken,
+    }
+
+  }
+
+  @Post('token/refresh')
+  postTokenRefresh(
+    @Headers('authorization') rawToken: string,){
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+
+    const newToken = this.authService.rotateToken(token,true);
+
+    /**
+     * {refreshToken : {token}}
+     */
+    return {
+      refreshToken: newToken,
+    }
+
   }
 }

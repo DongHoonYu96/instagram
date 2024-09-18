@@ -169,4 +169,37 @@ export class AuthService {
     }
 
   }
+
+  /**
+   * 토큰 검증
+   * @param token
+   */
+   verifyToken(token: string){
+    return this.jwtService.verify(token, {
+      secret: JWT_SECRET,
+    });
+   }
+
+  /**
+   * refresh 토큰 => access 토큰 재발급
+   * @param token
+   */
+  rotateToken(token: string, isRefreshToken: boolean){
+     const decoded = this.jwtService.verify(token,{
+       secret:JWT_SECRET,
+     });
+
+    /**
+     * sub : id
+     * email
+     * type : access | refresh
+     */
+    if(decoded.type !== 'refresh'){
+       throw new UnauthorizedException('토큰 재발급은 Refresh 토큰으로만 가능합니다!')
+     }
+
+    return this.signToken({
+      ...decoded,
+    }, isRefreshToken);
+   }
 }
