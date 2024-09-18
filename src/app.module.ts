@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { PostsModule } from './posts/posts.module';
 import { PostsModel } from "./posts/entities/posts.entity";
 import { UsersModel } from "./users/entities/users.entity";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UsersModel } from "./users/entities/users.entity";
       logging: true, // 모든 쿼리 로깅
       logger: 'advanced-console',
     }),
+    AuthModule,
 
   ],
   controllers: [AppController],
