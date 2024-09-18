@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from "@nestjs/jwt";
+import { UsersModel } from "../users/entities/users.entity";
+import { JWT_SECRET } from "./const/auth.const";
 
 @Injectable()
 export class AuthService {
@@ -31,13 +33,24 @@ export class AuthService {
    */
 
   /**
-   * Payload에 들어갈 정보
+   * Payload(실제 데이터)에 들어갈 정보
    *
    * 1) email
    * 2) sub == 사용자의 id
    * 3) type : access토큰인지, refresh 토큰인지
+   *
+   * Pick문법 : 가독성이 좋음 // email:string, id: string과 기능은 동일
    */
-  signToken(){
+  signToken(user: Pick<UsersModel, 'email' | 'id'>, isRefreshToken: boolean){
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      type: isRefreshToken ? 'refresh' : 'access',
+    };
 
+    return this.jwtService.sign(payload, {
+      secret: JWT_SECRET,
+      expiresIn: isRefreshToken? 3600 : 300,
+    });
   }
 }
