@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { PasswordPipe } from "./pipe/password.pipe";
 import { BasicTokenGuard } from "./guard/basic-token.guard";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard/bearer-token.guard";
+import { RegisterUserDto } from "./dto/register-user.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -25,14 +26,8 @@ export class AuthController {
 
   @Post('/register/email')
   postRegisterEmail(
-    @Body('nickname')nickname :string,
-    @Body('email')email :string,
-    @Body('password', PasswordPipe)password : string,){
-    return this.authService.registerWithEmail({
-      nickname,
-      email,
-      password,
-    });
+    @Body() body : RegisterUserDto) {
+    return this.authService.registerWithEmail(body);
   }
 
   @Post('token/access')

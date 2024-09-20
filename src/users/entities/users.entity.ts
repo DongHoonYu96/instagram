@@ -2,6 +2,10 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
 import { PostsModel } from "../../posts/entities/posts.entity";
 import { BaseModel } from "../../common/entity/base.entity";
+import { IsEmail, IsString, Length } from "class-validator";
+import { emailValidationMessage } from "../../common/validation-message/email-validation.message";
+import { lengthValidationMessage } from "../../common/validation-message/length-validation.message";
+import e from "express";
 
 @Entity()
 export class UsersModel extends BaseModel{
@@ -14,6 +18,10 @@ export class UsersModel extends BaseModel{
     length: 20,
     unique: true,
   })
+  @IsString()
+  @Length(1,20, {
+    message : lengthValidationMessage,
+  })
   nickname: string;
 
   /**
@@ -22,9 +30,17 @@ export class UsersModel extends BaseModel{
   @Column({
     unique: true,
   })
+  @IsEmail({}, {
+    message : emailValidationMessage,
+  })
+  @IsString()
   email: string;
 
   @Column()
+  @IsString()
+  @Length(3,20, {
+    message : lengthValidationMessage,
+  })
   password: string;
 
   @Column({

@@ -23,10 +23,11 @@ export class UsersController {
   // }
 
   @Patch(':id')
-  updatePost(@Param('id') id:number,
-             @Body('nickname') nickname: string,
-             @Body('email') email: string,
-             @Body('password') password: string){
+  updatePost(
+    @Param('id') id:number,
+    @Body() nickname: string,
+    @Body('email') email: string,
+    @Body('password') password: string){
     return this.usersService.updateUser(id, nickname, email, password);
   }
 
