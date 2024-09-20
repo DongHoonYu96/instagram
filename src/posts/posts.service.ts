@@ -116,7 +116,9 @@ export class PostsService {
      * next : 다음 요청을 할때 사용할 URL
      */
 
-    const lastItem = posts.length > 0 ? posts[posts.length-1] : null;
+    //가져온 게시물의길이 === 가져와야할 게시글 -> 정상작동
+    // 아닌경우 : 마지막페이지임 -> lastItem = null
+    const lastItem = posts.length > 0 && posts.length === dto.take ? posts[posts.length-1] : null;
 
     //lastItem이 존재하는 경우에만
     const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/posts`);
@@ -140,10 +142,10 @@ export class PostsService {
     return {
       data : posts,
       cursor : {
-        after : lastItem.id,
+        after : lastItem?.id, //null인경우 실행안됨 예외처리!.
       },
       count : posts.length, //null인경우 실행안됨.
-      next : nextUrl.toString(), //toString으로 객체를 str로 바꿔야 표시됨!
+      next : nextUrl?.toString(), //toString으로 객체를 str로 바꿔야 표시됨!
     }
   }
 
