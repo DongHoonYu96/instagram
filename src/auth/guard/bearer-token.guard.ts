@@ -23,8 +23,11 @@ export class BearerTokenGuard implements CanActivate {
       throw new UnauthorizedException('토큰이 없습니다!');
     }
 
+    // fibntbdffg
     const token = this.authService.extractTokenFromHeader(rawToken,true);
 
+    // 토큰 분석후
+    // email, sub, type, iat, exp 리턴
     const result = await this.authService.verifyToken(token);
 
     /**
