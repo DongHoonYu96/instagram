@@ -1,11 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
 import { PostsModel } from "../../posts/entities/posts.entity";
+import { BaseModel } from "../../common/entity/base.entity";
 
 @Entity()
-export class UsersModel {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class UsersModel extends BaseModel{
 
   /**
    * 길이가 20 이하

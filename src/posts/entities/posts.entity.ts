@@ -1,10 +1,9 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UsersModel } from "../../users/entities/users.entity";
+import { BaseModel } from "../../common/entity/base.entity";
 
 @Entity() //테이블생성해줘
-export class PostsModel {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class PostsModel extends BaseModel{
 
   /**
    * 게시글은 1명의 사용자를 가진다.
