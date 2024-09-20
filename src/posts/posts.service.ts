@@ -142,10 +142,10 @@ export class PostsService {
     return {
       data : posts,
       cursor : {
-        after : lastItem?.id, //null인경우 실행안됨 예외처리!.
+        after : lastItem?.id ?? null, //null인경우 실행안됨 예외처리!.
       },
       count : posts.length, //null인경우 실행안됨.
-      next : nextUrl?.toString(), //toString으로 객체를 str로 바꿔야 표시됨!
+      next : nextUrl?.toString() ?? null, //toString으로 객체를 str로 바꿔야 표시됨!
     }
   }
 
