@@ -129,14 +129,14 @@ export class PostsService {
        */
       for(const key of Object.keys(dto)){
         if(dto[key]){ //값이 있는지 체크
-          if(key !== 'where__id__more_than'){ //나머지 속성들 넣어주고
+          if(key !== 'where__id_more_than'){ //나머지 속성들 넣어주고
             nextUrl.searchParams.append(key, dto[key]); //order=ASC&take=20
           }
         }
       }
       //마지막으로 id 넣어주기 (req(dto)에 id 입력안한경우도 작동해야함)
       //where__id=20
-      nextUrl.searchParams.append('where__id__more_than', lastItem.id.toString());
+      nextUrl.searchParams.append('where__id_more_than', lastItem.id.toString());
     }
 
     return {
