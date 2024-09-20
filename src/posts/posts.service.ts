@@ -5,6 +5,7 @@ import { MoreThan, Repository } from "typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginatePostDto";
+import { HOST, PROTOCOL } from "../common/const/env.const";
 
 @Injectable()
 export class PostsService {
@@ -117,13 +118,32 @@ export class PostsService {
 
     const lastItem = posts.length > 0 ? posts[posts.length-1] : null;
 
+    //lastItem이 존재하는 경우에만
+    const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/posts`);
+    if(nextUrl){
+      /**
+       * dto 의 키값들 돌면서 (id, order, take)
+       * param 채우기
+       */
+      for(const key of Object.keys(dto)){
+        if(dto[key]){ //값이 있는지 체크
+          if(key !== 'where__id__more_than'){ //나머지 속성들 넣어주고
+            nextUrl.searchParams.append(key, dto[key]); //order=ASC&take=20
+          }
+        }
+      }
+      //마지막으로 id 넣어주기 (req(dto)에 id 입력안한경우도 작동해야함)
+      //where__id=20
+      nextUrl.searchParams.append('where__id__more_than', lastItem.id.toString());
+    }
+
     return {
       data : posts,
-      // cursor : {
-      //   after : posts[posts.length-1].id,
-      // },
-      count : lastItem?.id, //null인경우 실행안됨.
-      next : "",
+      cursor : {
+        after : lastItem.id,
+      },
+      count : posts.length, //null인경우 실행안됨.
+      next : nextUrl.toString(), //toString으로 객체를 str로 바꿔야 표시됨!
     }
   }
 
