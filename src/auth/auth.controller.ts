@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Headers, Post } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from './auth.service';
 import { PasswordPipe } from "./pipe/password.pipe";
+import { BasicTokenGuard } from "./guard/basic-token.guard";
+import { AccessTokenGuard, RefreshTokenGuard } from "./guard/bearer-token.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +13,7 @@ export class AuthController {
    * Header중 authorization 필드만 가져옴
    */
   @Post('/login/email')
+  @UseGuards(BasicTokenGuard)
   postLoginEmail(
     @Headers('authorization') rawToken: string,){
     const token = this.authService.extractTokenFromHeader(rawToken, false);
@@ -33,6 +36,7 @@ export class AuthController {
   }
 
   @Post('token/access')
+  @UseGuards(RefreshTokenGuard) //리프레시 토큰으로만 엑세스토큰 발급가능
   postTokenAccess(
     @Headers('authorization') rawToken: string,){
     const token = this.authService.extractTokenFromHeader(rawToken, true);
@@ -49,6 +53,7 @@ export class AuthController {
   }
 
   @Post('token/refresh')
+  @UseGuards(RefreshTokenGuard)
   postTokenRefresh(
     @Headers('authorization') rawToken: string,){
     const token = this.authService.extractTokenFromHeader(rawToken, true);

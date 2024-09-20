@@ -134,6 +134,7 @@ export class AuthService {
 
   /**
    * Bearer {bdfbdbdfbdbfdbcvbr43} 파싱해서 리턴
+   * return : bdfbdbdfbdbfdbcvbr43
    */
   extractTokenFromHeader(header:string, isBearer: boolean){
     const splitToken = header.split(' ');
@@ -151,6 +152,7 @@ export class AuthService {
 
   /**
    * Basic bd;fbdbdfbdbfdbcvbr43 -> email:password
+   * input : bd;fbdbdfbdbfdbcvbr43
    * return [email, password]
    */
   decodeBasicToken(base64String:string,){
