@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UsersModel } from "../../users/entities/users.entity";
 import { BaseModel } from "../../common/entity/base.entity";
+import { IsString, Length } from "class-validator";
 
 @Entity() //테이블생성해줘
 export class PostsModel extends BaseModel{
@@ -16,9 +17,14 @@ export class PostsModel extends BaseModel{
   author: UsersModel;
 
   @Column()
+  @IsString()
+  @Length(2,20, {
+    message:' 길이는 2~20이어야 합니다.',
+  })
   title: string;
 
   @Column()
+  @IsString()
   content: string;
 
   @Column()
