@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors
+} from "@nestjs/common";
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -6,7 +16,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getAllPosts(){
+  getAllUsers(){
     return this.usersService.getAllUsers();
   }
 

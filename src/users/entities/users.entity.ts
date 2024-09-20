@@ -6,6 +6,7 @@ import { IsEmail, IsString, Length } from "class-validator";
 import { emailValidationMessage } from "../../common/validation-message/email-validation.message";
 import { lengthValidationMessage } from "../../common/validation-message/length-validation.message";
 import e from "express";
+import { Exclude } from "class-transformer";
 
 @Entity()
 export class UsersModel extends BaseModel{
@@ -40,6 +41,21 @@ export class UsersModel extends BaseModel{
   @IsString()
   @Length(3,20, {
     message : lengthValidationMessage,
+  })
+  /**
+   * REQ
+   * fe -> be
+   * plain obj (JSON) -> class instance (DTO)
+   * 
+   * RES
+   * be -> fe
+   * class instance(DTO) -> plain obj (JSON)
+   * 
+   * toClassOnly -> REQ에만 적용
+   * toPlainOnly -> RES에만 적용
+   */
+  @Exclude({
+    toPlainOnly:true, //RES에 비밀번호 제외
   })
   password: string;
 
