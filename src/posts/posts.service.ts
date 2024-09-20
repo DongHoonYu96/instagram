@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { PostsModel } from "./entities/posts.entity";
-import { MoreThan, Repository } from "typeorm";
+import { FindOptionsWhere, LessThan, MoreThan, Repository } from "typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginatePostDto";
@@ -95,10 +95,18 @@ export class PostsService {
   }
 
   async paginatePosts(dto : PaginatePostDto){
+    //where 객체 만들기
+    //typeorm 코드 긁어오기 => 자동완성, typeSafe 보장받음
+    const where : FindOptionsWhere<PostsModel> = { }
+    if(dto.where__id_less_than){
+      where.id = LessThan(dto.where__id_less_than);
+    }
+    else{
+      where.id = LessThan(dto.where__id_more_than);
+    }
+
     const posts = await this.postsRepository.find({
-      where:{
-        id: MoreThan(dto.where__id_more_than ?? 0), //없으면 기본값 0으로!
-      },
+      where,
       order:{
         createdAt: dto.order__createdAt,
       },
@@ -129,14 +137,23 @@ export class PostsService {
        */
       for(const key of Object.keys(dto)){
         if(dto[key]){ //값이 있는지 체크
-          if(key !== 'where__id_more_than'){ //나머지 속성들 넣어주고
+          if(key !== 'where__id_more_than' && key !== 'where__id_less_than'){ //나머지 속성들 넣어주고
             nextUrl.searchParams.append(key, dto[key]); //order=ASC&take=20
           }
         }
       }
+
+      let key=null;
+      if(dto.order__createdAt === 'ASC'){
+        key = 'where__id_more_than';
+      }
+      else{
+        key='where__id_less_than';
+      }
+
       //마지막으로 id 넣어주기 (req(dto)에 id 입력안한경우도 작동해야함)
       //where__id=20
-      nextUrl.searchParams.append('where__id_more_than', lastItem.id.toString());
+      nextUrl.searchParams.append(key, lastItem.id.toString());
     }
 
     return {
