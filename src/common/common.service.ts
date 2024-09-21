@@ -11,7 +11,7 @@ import { HOST, PROTOCOL } from "./const/env.const";
 export class CommonService {
   paginate<T extends BaseModel>(
     dto: PaginatePostDto,
-    repository: Repository<T>, //어떤 리포지토리던 받을수있음 (postRepository, userRepository...)
+    repository: Repository<T>, //어떤 리포지토리던 받을수있음 (postRepository<PostModel>, userRepository<UsersModel>...)
     overrideFindOptions: FindManyOptions<T> = {}, //추가 옵션 (연관 table 속성 표시할건지 등)
     path : String, //url 의 path ('localhost:3000/posts 의 posts)
   ){
