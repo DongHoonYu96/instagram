@@ -9,7 +9,9 @@ async function bootstrap() {
     transform: true, //dto를 수정 가능하게(dto 기본값 들어가도록)
     transformOptions:{
       enableImplicitConversion: true, //Class-Validator Type에 맞게 자동형변환
-    }
+    },
+    whitelist: true,
+    forbidNonWhitelisted: true,
   }));
 
   await app.listen(3000);
