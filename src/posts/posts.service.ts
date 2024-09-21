@@ -98,11 +98,11 @@ export class PostsService {
     //where 객체 만들기
     //typeorm 코드 긁어오기 => 자동완성, typeSafe 보장받음
     const where : FindOptionsWhere<PostsModel> = { }
-    if(dto.where__id_less_than){
-      where.id = LessThan(dto.where__id_less_than);
+    if(dto.where__id__less_than){
+      where.id = LessThan(dto.where__id__less_than);
     }
     else{
-      where.id = MoreThan(dto.where__id_more_than);
+      where.id = MoreThan(dto.where__id__more_than);
     }
 
     const posts = await this.postsRepository.find({
@@ -137,7 +137,7 @@ export class PostsService {
        */
       for(const key of Object.keys(dto)){
         if(dto[key]){ //값이 있는지 체크
-          if(key !== 'where__id_more_than' && key !== 'where__id_less_than'){ //나머지 속성들 넣어주고
+          if(key !== 'where__id__more_than' && key !== 'where__id__less_than'){ //나머지 속성들 넣어주고
             nextUrl.searchParams.append(key, dto[key]); //order=ASC&take=20
           }
         }
@@ -145,10 +145,10 @@ export class PostsService {
 
       let key=null;
       if(dto.order__createdAt === 'ASC'){
-        key = 'where__id_more_than';
+        key = 'where__id__more_than';
       }
       else{
-        key='where__id_less_than';
+        key='where__id__less_than';
       }
 
       //마지막으로 id 넣어주기 (req(dto)에 id 입력안한경우도 작동해야함)

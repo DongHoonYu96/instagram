@@ -9,14 +9,14 @@ export class BasePaginatePostDto {
    */
   @IsNumber()
   @IsOptional()
-  where__id_more_than?:number;
+  where__id__more_than?:number;
 
   /**
    * DESC와 짝궁
    */
   @IsNumber()
   @IsOptional()
-  where__id_less_than?:number;
+  where__id__less_than?:number;
 
   @IsIn(['ASC', 'DESC']) //값제한
   @IsOptional()
