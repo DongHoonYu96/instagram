@@ -2,6 +2,9 @@ import { IsIn, IsNumber, IsOptional } from "class-validator";
 
 export class BasePaginatePostDto {
 
+  @IsNumber()
+  @IsOptional()
+  page? : number;
   /**
    * 이전 마지막 데이터의 ID
    * 이것 이후로 데이터를 가져와야함
