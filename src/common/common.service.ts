@@ -66,7 +66,7 @@ export class CommonService {
     const lastItem = results.length > 0 && results.length === dto.take ? results[results.length-1] : null;
 
     //lastItem이 존재하는 경우에만
-    const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/posts`);
+    const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/${path}`);
     if(nextUrl){
       /**
        * dto 의 키값들 돌면서 (id, order, take)
