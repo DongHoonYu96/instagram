@@ -194,6 +194,10 @@ export class CommonService {
     else{
       //where, id, more_than
       const [_, field, operator] = split;
+      if(operator === 'i_like'){
+        options[field] = FILTER_MAPPER[operator](`%${value}%`);
+        return options;
+      }
       options[field] = FILTER_MAPPER[operator](value); // options : { id : MoreThan(3) }
     }
 
