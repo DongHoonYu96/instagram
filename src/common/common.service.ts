@@ -38,7 +38,17 @@ export class CommonService {
     repository: Repository<T>, //어떤 리포지토리던 받을수있음 (postRepository, userRepository...)
     overrideFindOptions: FindManyOptions<T> = {}, //추가 옵션 (연관 table 속성 표시할건지 등)
   ){
+    const findOptions = this.composeFindOptions<T>(dto);
 
+    const [data, count] = await repository.findAndCount({
+      ...findOptions,
+      ...overrideFindOptions,
+    });
+
+    return {
+      data,
+      total: count,
+    }
   }
 
   private async cursorPaginate<T extends BaseModel>(
@@ -56,8 +66,8 @@ export class CommonService {
     const findOptions = this.composeFindOptions<T>(dto);
 
     const results = await repository.find({
-      ...findOptions,
-      ...overrideFindOptions,
+      ...findOptions, //url을 typeorm으로 바꾼 객체들
+      ...overrideFindOptions, // 개별적으로 추가할 typeorm 객체 (ex : 외래키 불러오기 등)
 
     });
 
