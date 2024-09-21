@@ -102,7 +102,7 @@ export class PostsService {
       where.id = LessThan(dto.where__id_less_than);
     }
     else{
-      where.id = LessThan(dto.where__id_more_than);
+      where.id = MoreThan(dto.where__id_more_than);
     }
 
     const posts = await this.postsRepository.find({
