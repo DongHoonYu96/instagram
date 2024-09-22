@@ -4,11 +4,15 @@ import { FindManyOptions, FindOptionsOrder, FindOptionsWhere, Repository } from 
 import { BaseModel } from "./entity/base.entity";
 import { BasePaginatePostDto } from "./dto/base-pagination.dto";
 import { FILTER_MAPPER } from "./const/filter-mapper.const";
-import { find } from "rxjs";
-import { HOST, PROTOCOL } from "./const/env.const";
+import { ConfigService } from "@nestjs/config";
+import { ENV_HOST_KEY, ENV_PROTOCOL_KEY } from "./const/env-keys.const";
 
 @Injectable()
 export class CommonService {
+  constructor(
+    private readonly configService: ConfigService,
+  ) {
+  }
   paginate<T extends BaseModel>(
     dto: PaginatePostDto,
     repository: Repository<T>, //어떤 리포지토리던 받을수있음 (postRepository<PostModel>, userRepository<UsersModel>...)
@@ -75,8 +79,11 @@ export class CommonService {
     // 아닌경우 : 마지막페이지임 -> lastItem = null
     const lastItem = results.length > 0 && results.length === dto.take ? results[results.length-1] : null;
 
+    const protocol = this.configService.get<string>(ENV_PROTOCOL_KEY);
+    const host = this.configService.get<string>(ENV_HOST_KEY);
+
     //lastItem이 존재하는 경우에만
-    const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/${path}`);
+    const nextUrl = lastItem && new URL(`${protocol}://${host}/${path}`);
     if(nextUrl){
       /**
        * dto 의 키값들 돌면서 (id, order, take)

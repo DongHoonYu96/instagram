@@ -5,7 +5,6 @@ import { FindOptionsWhere, LessThan, MoreThan, Repository } from "typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginatePostDto";
-import { HOST, PROTOCOL } from "../common/const/env.const";
 import { CommonService } from "../common/common.service";
 
 @Injectable()
