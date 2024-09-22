@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { PostsModel } from "./entities/posts.entity";
-import { FindOptionsWhere, LessThan, MoreThan, Repository } from "typeorm";
+import { FindOptionsWhere, LessThan, MoreThan, QueryRunner, Repository } from "typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginatePostDto";
@@ -49,9 +49,20 @@ export class PostsService {
      return post;
   }
 
-  async createPost(authorId: number, postDto : CreatePostDto){
+  /**
+   * @param qr
+   * qr이 있으면 트랜잭션으로 묶여야함 -> qr의 repository 반환
+   * 아니면, 그냥 리포지토리 반환
+   */
+  getRepository(qr? : QueryRunner){
+    return qr? qr.manager.getRepository<PostsModel>(PostsModel) : this.postsRepository;
+  }
 
-    const post = this.postsRepository.create({
+  async createPost(authorId: number, postDto : CreatePostDto, qr?: QueryRunner){
+
+    const repository = this.getRepository(qr);
+
+    const post = repository.create({
       author: {
         id: authorId,
       },
@@ -61,7 +72,7 @@ export class PostsService {
       commentCount:0,
     });
 
-    const newPost = await this.postsRepository.save(post);
+    const newPost = await repository.save(post);
     return newPost;
   }
 
@@ -130,35 +141,6 @@ export class PostsService {
     }
   }
 
-  /**
-   * dto의 이미지 이름을 기반으로
-   * 파일의 경로 생성
-   * @param dto
-   */
-  async createPostImage(dto : CreatePostImageDto){
-    const tempFilePath = join(TEMP_FOLDER_PATH, dto.path);
 
-    try{
-      await promises.access(tempFilePath); //존재확인,
-    }
-    catch(error){
-      throw new BadRequestException('존재하지 않는 파일 입니다.' + error);
-    }
 
-    //파일 이름만 가져오기
-    //public/temp/aaa.jpg -> aaa.jpg
-    const fileName= basename(tempFilePath);
-
-    const newPath = join(POST_IMAGE_PATH, fileName);
-
-    //옮기기전에 save (rollback대비)
-    const result = await this.imageRepository.save({
-      ...dto,
-    });
-
-    // 1->2로 파일 옮김.
-    await promises.rename(tempFilePath, newPath);
-
-    return result;
-  }
 }
