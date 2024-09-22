@@ -6,10 +6,6 @@ import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginatePostDto";
 import { CommonService } from "../common/common.service";
-import { join, basename } from "path";
-import { POST_IMAGE_PATH, PUBLIC_FOLDER_PATH, TEMP_FOLDER_PATH } from "../common/const/path.const";
-import {promises} from 'fs';
-import { CreatePostImageDto } from "./image/dto/create-image.dto";
 import { ImageModel } from "../common/entity/image.entity";
 import { DEFAULT_POST_FIND_OPTIONS } from "./const/default-post-find-options.const";
 
@@ -34,8 +30,10 @@ export class PostsService {
   }
 
 
-  async getPostById(id:number) {
-     const post = await this.postsRepository.findOne({
+  async getPostById(id:number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
+     const post = await repository.findOne({
       where:{
         id,
       },

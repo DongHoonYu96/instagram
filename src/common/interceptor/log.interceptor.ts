@@ -33,8 +33,7 @@ export class LogInterceptor implements NestInterceptor {
         tap(
           // [RES] {요청 path} {응답 시간} {얼마나 걸렸는지 ms}
           (observable)=>
-            console.log(`[RES] [UUID: ${uid} ] ${path} ${new Date().toLocaleString('kr')} 
-            ${new Date().getMilliseconds() - now.getMilliseconds()}ms`),
+            console.log(`[RES] [UUID: ${uid} ] ${path} ${new Date().toLocaleString('kr')} ${new Date().getMilliseconds() - now.getMilliseconds()}ms`),
         ),
       );
   }
