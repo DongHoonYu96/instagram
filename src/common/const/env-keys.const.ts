@@ -1,6 +1,6 @@
 export const ENV_PROTOCOL_KEY = 'PROTOCOL' //env의 PROTOCOL 키와 연결시킴
 export const ENV_HOST_KEY = 'HOST'
-export const ENV_JWT_SECRET_KEY = 'JWT_SECRET_KEY'
+export const ENV_JWT_SECRET_KEY = 'JWT_SECRET'
 export const ENV_HASH_ROUND_KEY = 'HASH_ROUNDS'
 export const ENV_DB_HOST_KEY = 'DB_HOST'
 export const ENV_DB_PORT_KEY = 'DB_PORT'
