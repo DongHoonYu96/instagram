@@ -32,16 +32,16 @@ export class ImageModel extends BaseModel{
   @IsString()
   @Transform(({value, obj}) => { //value == img이름, 현재객체(image객체)
     if(value && obj.type === ImageModelType.POST_IMAGE){
-      return join(
+      return `/${join(
         POST_PUBLIC_IMAGE_PATH,
         value,
-      )
+      )}`
     }
     else{
       return value;
     }
   })
-  path: String;
+  path: string;
 
   //연동될타입, 어떤 속성과 연동될건지
   @ManyToOne((type) => PostsModel, (post) => post.images)

@@ -9,19 +9,27 @@ import { CommonService } from "../common/common.service";
 import { join, basename } from "path";
 import { POST_IMAGE_PATH, PUBLIC_FOLDER_PATH, TEMP_FOLDER_PATH } from "../common/const/path.const";
 import {promises} from 'fs';
+import { CreatePostImageDto } from "./image/dto/create-image.dto";
+import { ImageModel } from "../common/entity/image.entity";
+import { DEFAULT_POST_FIND_OPTIONS } from "./const/default-post-find-options.const";
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepository: Repository<PostsModel>,
-    private readonly commonService: CommonService
+
+    @InjectRepository(ImageModel)
+    private readonly imageRepository : Repository<ImageModel>,
+
+    private readonly commonService: CommonService,
+
   ) {
   }
 
   async getAllPosts(){
     return await this.postsRepository.find({
-      relations:['author'],
+      ...DEFAULT_POST_FIND_OPTIONS,
     });
   }
 
@@ -31,7 +39,7 @@ export class PostsService {
       where:{
         id,
       },
-       relations:['author'],
+       ...DEFAULT_POST_FIND_OPTIONS,
     });
 
      if(!post){
@@ -48,6 +56,7 @@ export class PostsService {
         id: authorId,
       },
       ...postDto,
+      images: [],
       likeCount:0,
       commentCount:0,
     });
@@ -105,7 +114,7 @@ export class PostsService {
       dto,
       this.postsRepository,
       {
-        relations: ['author'],
+        ...DEFAULT_POST_FIND_OPTIONS,
       },
       'posts',
     )
@@ -116,6 +125,7 @@ export class PostsService {
       await this.createPost(userId, {
         title : `임의로 생성된 제목 ${i}`,
         content : `임의로 생성된 내용 ${i}`,
+        images:[],
       })
     }
   }
@@ -125,8 +135,8 @@ export class PostsService {
    * 파일의 경로 생성
    * @param dto
    */
-  async createPostImage(dto : CreatePostDto){
-    const tempFilePath = join(TEMP_FOLDER_PATH, dto.image);
+  async createPostImage(dto : CreatePostImageDto){
+    const tempFilePath = join(TEMP_FOLDER_PATH, dto.path);
 
     try{
       await promises.access(tempFilePath); //존재확인,
@@ -141,9 +151,14 @@ export class PostsService {
 
     const newPath = join(POST_IMAGE_PATH, fileName);
 
+    //옮기기전에 save (rollback대비)
+    const result = await this.imageRepository.save({
+      ...dto,
+    });
+
     // 1->2로 파일 옮김.
     await promises.rename(tempFilePath, newPath);
 
-    return true;
+    return result;
   }
 }

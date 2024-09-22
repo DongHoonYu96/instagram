@@ -6,16 +6,17 @@ import { PostsModel } from "./entities/posts.entity";
 import { AuthModule } from "../auth/auth.module";
 import { UsersModule } from "../users/users.module";
 import { CommonModule } from "../common/common.module";
+import { ImageModel } from "../common/entity/image.entity";
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([
-      PostsModel
+      PostsModel,
+      ImageModel, //Repository만 import할때는 여기!
     ]),
     AuthModule,
     UsersModule,
     CommonModule,
-
   ],
   controllers: [PostsController],
   providers: [PostsService],

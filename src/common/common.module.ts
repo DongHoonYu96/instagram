@@ -8,6 +8,7 @@ import { TEMP_FOLDER_PATH } from "../common/const/path.const";
 import {v4 as uuid} from 'uuid';
 import { AuthModule } from "../auth/auth.module";
 import { UsersModule } from "../users/users.module";
+import { ImageModel } from "./entity/image.entity";
 
 @Module({
   imports:[

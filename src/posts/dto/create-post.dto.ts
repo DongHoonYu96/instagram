@@ -4,8 +4,10 @@ import { IsOptional, IsString } from "class-validator";
 
 export class CreatePostDto extends PickType(PostsModel, ['title', 'content']){
 
-  @IsString()
+  @IsString({
+    each:true, //배열의 모든 요소 검증
+  })
   @IsOptional()
-  image?: string;
+  images?: string[] = [];
 
 }
