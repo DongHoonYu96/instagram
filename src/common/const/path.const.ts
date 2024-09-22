@@ -8,6 +8,9 @@ export const PUBLIC_FOLDER_NAME = 'public';
 //포스트 이미지들을 저장할 폴더 이름
 export const POSTS_FOLDER_NAME = 'posts';
 
+//임시 폴더이름
+export const TEMP_FOLDER_NAME = 'temp';
+
 //공개폴더의 절대경로
 // /{}/public
 export const PUBLIC_FOLDER_PATH = join(
@@ -28,4 +31,11 @@ export const POST_IMAGE_PATH = join(
 export const POST_PUBLIC_IMAGE_PATH = join(
   PUBLIC_FOLDER_NAME,
   POSTS_FOLDER_NAME,
+)
+
+//임시파일들을 저장할 폴더
+// /public/temp
+export const TEMP_FOLDER_PATH = join(
+  PUBLIC_FOLDER_NAME,
+  TEMP_FOLDER_NAME,
 )

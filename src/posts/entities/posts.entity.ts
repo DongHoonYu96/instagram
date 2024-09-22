@@ -1,8 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UsersModel } from "../../users/entities/users.entity";
 import { BaseModel } from "../../common/entity/base.entity";
 import { IsString, Length } from "class-validator";
 import { lengthValidationMessage } from "../../common/validation-message/length-validation.message";
+import { Transform } from "class-transformer";
+import { join } from "path";
+import { POST_PUBLIC_IMAGE_PATH } from "../../common/const/path.const";
 
 @Entity() //테이블생성해줘
 export class PostsModel extends BaseModel{
@@ -31,6 +34,8 @@ export class PostsModel extends BaseModel{
   @Column({
     nullable:true,
   })
+  //img 이름 = value를 수정함.
+  @Transform(({value}) => value && `/${join(POST_PUBLIC_IMAGE_PATH, value)}`)
   image?: string;
 
   @Column()

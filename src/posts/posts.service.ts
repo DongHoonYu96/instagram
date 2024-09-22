@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { PostsModel } from "./entities/posts.entity";
 import { FindOptionsWhere, LessThan, MoreThan, Repository } from "typeorm";
@@ -6,6 +6,9 @@ import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginatePostDto";
 import { CommonService } from "../common/common.service";
+import { join, basename } from "path";
+import { POST_IMAGE_PATH, PUBLIC_FOLDER_PATH, TEMP_FOLDER_PATH } from "../common/const/path.const";
+import {promises} from 'fs';
 
 @Injectable()
 export class PostsService {
@@ -38,14 +41,13 @@ export class PostsService {
      return post;
   }
 
-  async createPost(authorId: number, postDto : CreatePostDto, image? :string){
+  async createPost(authorId: number, postDto : CreatePostDto){
 
     const post = this.postsRepository.create({
       author: {
         id: authorId,
       },
       ...postDto,
-      image,
       likeCount:0,
       commentCount:0,
     });
@@ -53,6 +55,8 @@ export class PostsService {
     const newPost = await this.postsRepository.save(post);
     return newPost;
   }
+
+
 
   async updatePost(postId: number, updatePostDto : UpdatePostDto) {
     const {title, content} = updatePostDto;
@@ -114,5 +118,32 @@ export class PostsService {
         content : `임의로 생성된 내용 ${i}`,
       })
     }
+  }
+
+  /**
+   * dto의 이미지 이름을 기반으로
+   * 파일의 경로 생성
+   * @param dto
+   */
+  async createPostImage(dto : CreatePostDto){
+    const tempFilePath = join(TEMP_FOLDER_PATH, dto.image);
+
+    try{
+      await promises.access(tempFilePath); //존재확인,
+    }
+    catch(error){
+      throw new BadRequestException('존재하지 않는 파일 입니다.' + error);
+    }
+
+    //파일 이름만 가져오기
+    //public/temp/aaa.jpg -> aaa.jpg
+    const fileName= basename(tempFilePath);
+
+    const newPath = join(POST_IMAGE_PATH, fileName);
+
+    // 1->2로 파일 옮김.
+    await promises.rename(tempFilePath, newPath);
+
+    return true;
   }
 }

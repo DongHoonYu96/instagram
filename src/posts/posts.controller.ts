@@ -40,13 +40,14 @@ export class PostsController {
 
   @Post()
   @UseGuards(AccessTokenGuard)
-  @UseInterceptors(FileInterceptor('image')) //req에 image키값에 대해 우리가 등록한 multer 검증실행
-  postPost(
+  async postPost(
     @User('id') userId : number,
     @Body() body : CreatePostDto,
-    @UploadedFile() file?
     ){
-    return this.postsService.createPost(userId ,body, file?.filename, );
+
+    await this.postsService.createPostImage(body);
+
+    return this.postsService.createPost(userId ,body, );
   }
 
   @Patch(':id')
